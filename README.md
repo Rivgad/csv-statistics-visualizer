@@ -19,7 +19,11 @@ https://csv-statistics-visualizer.streamlit.app/
 
 # Installation
 
+<details>
+<summary>
+
 ### Installing and Running Locally
+</summary>
 
 ### Pre-requisites
 
@@ -48,7 +52,13 @@ https://csv-statistics-visualizer.streamlit.app/
     python -m streamlit run app/streamlit_app.py
     ```
 
+</details>
+
+<details>
+<summary>
+
 ### Running on [Streamlit Community Cloud](https://share.streamlit.io/)
+</summary>
 
 1. Fork repository \*[click here](https://github.com/Rivgad/csv-statistics-visualizer/fork)\*
 
@@ -60,3 +70,5 @@ https://csv-statistics-visualizer.streamlit.app/
     - Main file path: app/streamlit_app.py
 4. Click 'Advanced settings...' and choose Python version 3.10
 5. Click 'Deploy!'
+
+</details>
