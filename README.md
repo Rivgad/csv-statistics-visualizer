@@ -37,13 +37,15 @@ https://csv-statistics-visualizer.streamlit.app/
     cd csv-statistics-visualizer
     ```
 
-2. Create a new Conda environment and activate it
+1. Open Anaconda Prompt and change directory to project directory
+
+1. Create a new Conda environment and activate it
     ```
     conda env create -f conda-env.yml
     conda activate csv-statistics-visualizer-env
     ```
 
-3. Run the Streamlit app
+1. Run the Streamlit app
     ```
     streamlit run app/streamlit_app.py
     ```
