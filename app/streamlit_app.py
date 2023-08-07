@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 from pandas.errors import ParserError
+import plotly.express as px
 
 
 def main():
@@ -26,6 +27,24 @@ def main():
         if len(columns_options) != 2:
             st.warning("You have to select 2 columns")
             return
+
+        for column_option in columns_options:
+            if dataframe[column_option].dtype in ["object", "bool"]:
+                counts = dataframe[column_option].value_counts()
+
+                fig = px.pie(
+                    names=counts.index,
+                    values=counts,
+                )
+            else:
+                fig = px.histogram(
+                    data_frame=dataframe,
+                    x=column_option,
+                    marginal="box",
+                    histnorm="density",
+                )
+
+            st.plotly_chart(fig, use_container_width=True)
 
         testing_algorithms_options = st.multiselect(
             "Choose algorithms",
