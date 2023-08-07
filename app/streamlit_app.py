@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+from pandas.errors import ParserError
 
 
 def main():
@@ -45,4 +46,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except ParserError as ex:
+        st.error(
+            "An error occurred while trying to parse the dataframe. Check the file and try again."
+        )
+    except Exception as ex:
+        st.exception(ex)
