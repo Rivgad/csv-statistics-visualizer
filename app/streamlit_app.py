@@ -46,7 +46,7 @@ def main():
 
             st.plotly_chart(fig, use_container_width=True)
 
-        testing_algorithms_options = st.multiselect(
+        testing_algorithm_option = st.selectbox(
             "Choose algorithms",
             options=[
                 "A/B test",
