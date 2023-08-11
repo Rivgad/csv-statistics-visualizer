@@ -50,11 +50,8 @@ def main():
         testing_algorithm_option = st.selectbox(
             "Choose algorithms",
             options=[
-                "A/B test",
-                "t-test",
-                "p-value",
-                "u-test",
-                "bootstraping",
+                "Welch's t-test",
+                "Mann–Whitney U test",
                 "chi-square",
             ],
             placeholder="Choose at least 2 algorithms",
