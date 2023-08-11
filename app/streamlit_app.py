@@ -5,6 +5,14 @@ import plotly.express as px
 from scipy import stats
 
 
+if "show_distplots" not in st.session_state:
+    st.session_state.show_distplots = False
+
+
+def click_button_show_distplots():
+    st.session_state.show_distplots = not st.session_state.show_distplots
+
+
 def main():
     with st.echo(code_location="below"):
         uploaded_file = st.file_uploader(
@@ -29,7 +37,8 @@ def main():
             st.warning("You have to select 2 columns")
             return
 
-        if st.button("Show distplots"):
+        st.button("Click me", on_click=click_button_show_distplots)
+        if st.session_state.show_distplots:
             for column_option in columns_options:
                 if dataframe[column_option].dtype in ["object", "bool"]:
                     counts = dataframe[column_option].value_counts()
