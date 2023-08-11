@@ -58,9 +58,76 @@ def main():
             placeholder="Choose algorithm",
         )
 
-        if len(testing_algorithms_options) < 2:
-            st.warning("You have to choose at least 2 algorithms")
-            return
+        if st.button("Calculate"):
+            if testing_algorithm_option == "Welch's t-test":
+                if (dataframe[columns_options[0]].dtype not in ["object", "bool"]) and (
+                    dataframe[columns_options[1]].dtype not in ["object", "bool"]
+                ):
+                    df = dataframe.dropna(subset=columns_options)
+
+                    stat, pvalue = stats.ttest_ind(
+                        df[columns_options[0]], df[columns_options[1]], equal_var=False
+                    )
+                    st.write("Student's t-test result:")
+                    st.write(f"Statistic = {stat}")
+                    st.write(f"p-value = {pvalue}")
+                    if pvalue < 0.05:
+                        st.write(
+                            "The difference is statistically significant (p < 0.05)"
+                        )
+                    else:
+                        st.write(
+                            "The difference is not statistically significant (p >= 0.05)"
+                        )
+                else:
+                    st.write(
+                        "The t-test requires two numerical variables. Please select other variables or a test."
+                    )
+            elif testing_algorithm_option == "Mann–Whitney U test":
+                if (dataframe[columns_options[0]].dtype != "object") & (
+                    dataframe[columns_options[1]].dtype != "object"
+                ):
+                    df = dataframe.dropna(subset=columns_options)
+
+                    stat, pvalue = stats.mannwhitneyu(
+                        df[columns_options[0]], df[columns_options[1]]
+                    )
+
+                    st.write("Mann–Whitney U test result:")
+                    st.write(f"Statistic = {stat}")
+                    st.write(f"p-value = {pvalue}")
+                    if pvalue < 0.05:
+                        st.write(
+                            "The difference is statistically significant (p < 0.05)"
+                        )
+                    else:
+                        st.write(
+                            "The difference is not statistically significant (p >= 0.05)"
+                        )
+                else:
+                    st.write(
+                        "Mann–Whitney U test requires two numerical variables. Please select other variables or a test."
+                    )
+            elif testing_algorithm_option == "chi-square":
+                cross_tab = pd.crosstab(
+                    dataframe[columns_options[0]],
+                    dataframe[columns_options[1]],
+                    margins=True,
+                )
+                st.write("Contingency table:")
+                st.write(cross_tab)
+
+                cross_tab = cross_tab.drop("All", axis=1).drop("All", axis=0)
+                chi2, pvalue, _, _ = stats.chi2_contingency(cross_tab)
+
+                st.write("Chi-Square value (χ²): ", chi2)
+                st.write("p-value: ", pvalue)
+                if pvalue < 0.05:
+                    st.write("The difference is statistically significant (p < 0.05)")
+                else:
+                    st.write(
+                        "The difference is not statistically significant (p >= 0.05)"
+                    )
 
 
 if __name__ == "__main__":
