@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from pandas.errors import ParserError
 import plotly.express as px
+from scipy import stats
 
 
 def main():
