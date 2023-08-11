@@ -54,7 +54,7 @@ def main():
                 "Mann–Whitney U test",
                 "chi-square",
             ],
-            placeholder="Choose at least 2 algorithms",
+            placeholder="Choose algorithm",
         )
 
         if len(testing_algorithms_options) < 2:
