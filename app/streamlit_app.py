@@ -127,9 +127,10 @@ def main():
                 st.write(cross_tab)
 
                 cross_tab = cross_tab.drop("All", axis=1).drop("All", axis=0)
-                chi2, pvalue, _, _ = stats.chi2_contingency(cross_tab)
+                stat, pvalue, _, _ = stats.chi2_contingency(cross_tab)
 
-                st.write("Chi-Square value (χ²): ", chi2)
+                st.write("Chi-Square test result:")
+                st.write(f"Statistic = {stat}")
                 st.write("p-value: ", pvalue)
                 if pvalue < 0.05:
                     st.write("The difference is statistically significant (p < 0.05)")
