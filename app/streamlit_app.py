@@ -15,9 +15,14 @@ def click_button_show_distplots():
 
 def main():
     with st.echo(code_location="below"):
-        uploaded_file = st.file_uploader(
-            "Load dataset (*.csv)", ["csv"], accept_multiple_files=False
-        )
+        use_example_dataset = st.checkbox("Use example dataset")
+
+        if use_example_dataset:
+            uploaded_file = ".\\datasets\\students.csv"
+        else:
+            uploaded_file = st.file_uploader(
+                "Load dataset (*.csv)", ["csv"], accept_multiple_files=False
+            )
 
         if uploaded_file is not None:
             dataframe = pd.read_csv(uploaded_file)
