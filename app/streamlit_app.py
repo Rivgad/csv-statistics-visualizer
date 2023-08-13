@@ -14,7 +14,9 @@ def click_button_show_distplots():
 
 
 def main():
+    st.markdown("# 📊 Data visualization and testing")
     with st.echo(code_location="below"):
+        st.markdown("### Load dataset")
         use_example_dataset = st.checkbox("Use example dataset")
 
         if use_example_dataset:
@@ -26,9 +28,11 @@ def main():
 
         if uploaded_file is not None:
             dataframe = pd.read_csv(uploaded_file)
-            st.write(dataframe[:5])
         else:
             return
+
+        st.markdown("### Data preview")
+        st.write(dataframe[:5])
 
         columns = dataframe.columns.tolist()
         columns_options = st.multiselect(
@@ -42,7 +46,8 @@ def main():
             st.warning("You have to select 2 columns")
             return
 
-        st.button("Click me", on_click=click_button_show_distplots)
+        st.markdown("### Distpots view")
+        st.button("Show", on_click=click_button_show_distplots)
         if st.session_state.show_distplots:
             for column_option in columns_options:
                 if dataframe[column_option].dtype in ["object", "bool"]:
@@ -62,6 +67,7 @@ def main():
 
                 st.plotly_chart(fig, use_container_width=True)
 
+        st.markdown("### Testing")
         testing_algorithm_option = st.selectbox(
             "Choose algorithms",
             options=[
