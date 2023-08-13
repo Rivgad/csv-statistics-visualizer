@@ -68,7 +68,7 @@ def main():
                 st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("### Testing")
-        testing_algorithm_option = st.selectbox(
+        test_name = st.selectbox(
             "Choose algorithms",
             options=[
                 "Welch's t-test",
@@ -79,7 +79,7 @@ def main():
         )
 
         if st.button("Calculate"):
-            if testing_algorithm_option == "Welch's t-test":
+            if test_name == "Welch's t-test":
                 if (dataframe[columns_options[0]].dtype not in ["object", "bool"]) and (
                     dataframe[columns_options[1]].dtype not in ["object", "bool"]
                 ):
@@ -103,7 +103,7 @@ def main():
                     st.write(
                         "The t-test requires two numerical variables. Please select other variables or a test."
                     )
-            elif testing_algorithm_option == "Mann–Whitney U test":
+            elif test_name == "Mann–Whitney U test":
                 if (dataframe[columns_options[0]].dtype != "object") & (
                     dataframe[columns_options[1]].dtype != "object"
                 ):
@@ -128,7 +128,7 @@ def main():
                     st.write(
                         "Mann–Whitney U test requires two numerical variables. Please select other variables or a test."
                     )
-            elif testing_algorithm_option == "chi-square":
+            elif test_name == "chi-square":
                 cross_tab = pd.crosstab(
                     dataframe[columns_options[0]],
                     dataframe[columns_options[1]],
