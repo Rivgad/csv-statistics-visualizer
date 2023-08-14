@@ -99,9 +99,9 @@ def main():
                 try:
                     result = test.execute(dataframe=dataframe, columns=columns_options)
 
-                    st.write(f"{test_name} result:")
-                    st.write(f"Statistic = {result.statistic}")
-                    st.write(f"p-value = {result.pvalue}")
+                    st.markdown(f"##### {test_name} result:")
+                    st.write("Statistic = ", result.statistic)
+                    st.write("p-value = ", result.pvalue)
                     if result.pvalue < 0.05:
                         st.write(
                             "The difference is statistically significant (p < 0.05)"
