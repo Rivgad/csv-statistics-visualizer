@@ -3,6 +3,7 @@ import streamlit as st
 from pandas.errors import ParserError
 import plotly.express as px
 from typing import Dict
+from app.helpers import is_categorical
 from app.tests import (
     WelchsTTest,
     StatisticalTest,
@@ -58,22 +59,7 @@ def main():
         if show_distlpots:
             st.markdown("### Distpots view")
             for column_option in columns_options:
-                if dataframe[column_option].dtype in ["object", "bool"]:
-                    counts = dataframe[column_option].value_counts()
-
-                    fig = px.pie(
-                        names=counts.index,
-                        values=counts,
-                    )
-                else:
-                    fig = px.histogram(
-                        data_frame=dataframe,
-                        x=column_option,
-                        marginal="box",
-                        histnorm="density",
-                    )
-
-                st.plotly_chart(fig, use_container_width=True)
+                draw_distplot(dataframe, column_option)
 
         st.markdown("### Testing")
         test_name = st.selectbox(
@@ -106,6 +92,26 @@ def main():
                         )
                 except TestExecutionError as ex:
                     st.error(ex.msg)
+
+
+def draw_distplot(dataframe: pd.DataFrame, column: str):
+    st.markdown(f"##### {column.capitalize()}")
+    if is_categorical(dataframe[column]):
+        counts = dataframe[column].value_counts()
+
+        fig = px.pie(
+            names=counts.index,
+            values=counts,
+        )
+    else:
+        fig = px.histogram(
+            data_frame=dataframe,
+            x=column,
+            marginal="box",
+            histnorm="density",
+        )
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 if __name__ == "__main__":
