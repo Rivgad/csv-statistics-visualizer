@@ -2,20 +2,47 @@ import pandas as pd
 import streamlit as st
 from pandas.errors import ParserError
 import plotly.express as px
-from scipy import stats
+from typing import Dict
+from app.helpers import is_categorical
+from app.tests import (
+    WelchsTTest,
+    StatisticalTest,
+    MannWhitneyUTest,
+    ChiSquareTest,
+    TestExecutionError,
+)
+
+
+tests: Dict[str, StatisticalTest] = {
+    "Welch's t-test": WelchsTTest(),
+    "Mann–Whitney U test": MannWhitneyUTest(),
+    "Chi-square": ChiSquareTest(),
+}
 
 
 def main():
     with st.echo(code_location="below"):
-        uploaded_file = st.file_uploader(
-            "Load dataset (*.csv)", ["csv"], accept_multiple_files=False
-        )
+        st.markdown("# 📊 Data visualization and testing")
+        st.sidebar.markdown("# Settings")
+
+        use_example_dataset = st.sidebar.checkbox("Use example dataset")
+        show_distlpots = st.sidebar.checkbox("Show distplots")
+
+        st.markdown("## Load dataset")
+        if use_example_dataset:
+            uploaded_file = ".\\datasets\\students.csv"
+        else:
+            uploaded_file = st.file_uploader(
+                "Load dataset (*.csv)", ["csv"], accept_multiple_files=False
+            )
 
         if uploaded_file is not None:
             dataframe = pd.read_csv(uploaded_file)
-            st.write(dataframe[:5])
         else:
             return
+
+        st.markdown("### Data preview")
+        st.write(dataframe[:5])
 
         columns = dataframe.columns.tolist()
         columns_options = st.multiselect(
@@ -29,49 +56,33 @@ def main():
             st.warning("You have to select 2 columns")
             return
 
-        if st.button("Show distplots"):
+        if show_distlpots:
+            st.markdown("### Distpots")
             for column_option in columns_options:
-                if dataframe[column_option].dtype in ["object", "bool"]:
-                    counts = dataframe[column_option].value_counts()
+                draw_distplot(dataframe, column_option)
 
-                    fig = px.pie(
-                        names=counts.index,
-                        values=counts,
-                    )
-                else:
-                    fig = px.histogram(
-                        data_frame=dataframe,
-                        x=column_option,
-                        marginal="box",
-                        histnorm="density",
-                    )
-
-                st.plotly_chart(fig, use_container_width=True)
-
-        testing_algorithm_option = st.selectbox(
-            "Choose algorithms",
+        st.markdown("### Testing")
+        test_name = st.selectbox(
+            "Choose algorithm",
             options=[
                 "Welch's t-test",
                 "Mann–Whitney U test",
-                "chi-square",
+                "Chi-square",
             ],
             placeholder="Choose algorithm",
         )
 
-        if st.button("Calculate"):
-            if testing_algorithm_option == "Welch's t-test":
-                if (dataframe[columns_options[0]].dtype not in ["object", "bool"]) and (
-                    dataframe[columns_options[1]].dtype not in ["object", "bool"]
-                ):
-                    df = dataframe.dropna(subset=columns_options)
+        if st.button("Run test"):
+            if test_name:
+                test = tests[test_name]
 
-                    stat, pvalue = stats.ttest_ind(
-                        df[columns_options[0]], df[columns_options[1]], equal_var=False
-                    )
-                    st.write("Student's t-test result:")
-                    st.write(f"Statistic = {stat}")
-                    st.write(f"p-value = {pvalue}")
-                    if pvalue < 0.05:
+                try:
+                    result = test.execute(dataframe=dataframe, columns=columns_options)
+
+                    st.markdown(f"##### {test_name} result:")
+                    st.write("Statistic = ", result.statistic)
+                    st.write("p-value = ", result.pvalue)
+                    if result.pvalue < 0.05:
                         st.write(
                             "The difference is statistically significant (p < 0.05)"
                         )
@@ -79,55 +90,28 @@ def main():
                         st.write(
                             "The difference is not statistically significant (p >= 0.05)"
                         )
-                else:
-                    st.write(
-                        "The t-test requires two numerical variables. Please select other variables or a test."
-                    )
-            elif testing_algorithm_option == "Mann–Whitney U test":
-                if (dataframe[columns_options[0]].dtype != "object") & (
-                    dataframe[columns_options[1]].dtype != "object"
-                ):
-                    df = dataframe.dropna(subset=columns_options)
+                except TestExecutionError as ex:
+                    st.error(ex.msg)
 
-                    stat, pvalue = stats.mannwhitneyu(
-                        df[columns_options[0]], df[columns_options[1]]
-                    )
 
-                    st.write("Mann–Whitney U test result:")
-                    st.write(f"Statistic = {stat}")
-                    st.write(f"p-value = {pvalue}")
-                    if pvalue < 0.05:
-                        st.write(
-                            "The difference is statistically significant (p < 0.05)"
-                        )
-                    else:
-                        st.write(
-                            "The difference is not statistically significant (p >= 0.05)"
-                        )
-                else:
-                    st.write(
-                        "Mann–Whitney U test requires two numerical variables. Please select other variables or a test."
-                    )
-            elif testing_algorithm_option == "chi-square":
-                cross_tab = pd.crosstab(
-                    dataframe[columns_options[0]],
-                    dataframe[columns_options[1]],
-                    margins=True,
-                )
-                st.write("Contingency table:")
-                st.write(cross_tab)
+def draw_distplot(dataframe: pd.DataFrame, column: str):
+    st.markdown(f"##### {column.capitalize()}")
+    if is_categorical(dataframe[column]):
+        counts = dataframe[column].value_counts()
 
-                cross_tab = cross_tab.drop("All", axis=1).drop("All", axis=0)
-                chi2, pvalue, _, _ = stats.chi2_contingency(cross_tab)
+        fig = px.pie(
+            names=counts.index,
+            values=counts,
+        )
+    else:
+        fig = px.histogram(
+            data_frame=dataframe,
+            x=column,
+            marginal="box",
+            histnorm="density",
+        )
 
-                st.write("Chi-Square value (χ²): ", chi2)
-                st.write("p-value: ", pvalue)
-                if pvalue < 0.05:
-                    st.write("The difference is statistically significant (p < 0.05)")
-                else:
-                    st.write(
-                        "The difference is not statistically significant (p >= 0.05)"
-                    )
+    st.plotly_chart(fig, use_container_width=True)
 
 
 if __name__ == "__main__":
