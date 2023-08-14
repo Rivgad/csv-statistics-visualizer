@@ -3,8 +3,8 @@ from typing import NamedTuple, Optional, Tuple, TypeAlias
 
 
 class Result(NamedTuple):
-    statistic: Optional[float | np.ndarray]
-    pvalue: Optional[float | np.ndarray]
+    statistic: float | np.ndarray
+    pvalue: float | np.ndarray
 
 
 class TestResult(NamedTuple):
