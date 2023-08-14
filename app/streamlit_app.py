@@ -94,25 +94,23 @@ def main():
         if st.button("Calculate"):
             if test_name:
                 test = tests[test_name]
-                if test:
-                    try:
-                        result = test.execute(
-                            dataframe=dataframe, columns=columns_options
-                        )
 
-                        st.write(f"{test_name} result:")
-                        st.write(f"Statistic = {result.statistic}")
-                        st.write(f"p-value = {result.pvalue}")
-                        if result.pvalue < 0.05:
-                            st.write(
-                                "The difference is statistically significant (p < 0.05)"
-                            )
-                        else:
-                            st.write(
-                                "The difference is not statistically significant (p >= 0.05)"
-                            )
-                    except TestExecutionError as ex:
-                        st.error(ex.msg)
+                try:
+                    result = test.execute(dataframe=dataframe, columns=columns_options)
+
+                    st.write(f"{test_name} result:")
+                    st.write(f"Statistic = {result.statistic}")
+                    st.write(f"p-value = {result.pvalue}")
+                    if result.pvalue < 0.05:
+                        st.write(
+                            "The difference is statistically significant (p < 0.05)"
+                        )
+                    else:
+                        st.write(
+                            "The difference is not statistically significant (p >= 0.05)"
+                        )
+                except TestExecutionError as ex:
+                    st.error(ex.msg)
 
 
 if __name__ == "__main__":
