@@ -91,7 +91,7 @@ def main():
             placeholder="Choose algorithm",
         )
 
-        if st.button("Calculate"):
+        if st.button("Run test"):
             if test_name:
                 test = tests[test_name]
 
