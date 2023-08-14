@@ -27,12 +27,13 @@ def click_button_show_distplots():
 
 
 def main():
-    st.markdown("# 📊 Data visualization and testing")
-    st.sidebar.markdown("# Settings")
-    use_example_dataset = st.sidebar.checkbox("Use example dataset")
-    show_distlpots = st.sidebar.checkbox("Show distplots")
-
     with st.echo(code_location="below"):
+        st.markdown("# 📊 Data visualization and testing")
+        st.sidebar.markdown("# Settings")
+
+        use_example_dataset = st.sidebar.checkbox("Use example dataset")
+        show_distlpots = st.sidebar.checkbox("Show distplots")
+
         st.markdown("## Load dataset")
         if use_example_dataset:
             uploaded_file = ".\\datasets\\students.csv"
