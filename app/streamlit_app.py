@@ -77,7 +77,7 @@ def main():
 
         st.markdown("### Testing")
         test_name = st.selectbox(
-            "Choose algorithms",
+            "Choose algorithm",
             options=[
                 "Welch's t-test",
                 "Mann–Whitney U test",
