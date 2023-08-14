@@ -3,7 +3,15 @@ import streamlit as st
 from pandas.errors import ParserError
 import plotly.express as px
 from scipy import stats
+from typing import Dict
+from app.tests import WelchsTTest, StatisticalTest, MannWhitneyUTest, ChiSquareTest
 
+
+tests: Dict[str, StatisticalTest | None] = {
+    "Welch's t-test": WelchsTTest(),
+    "Mann–Whitney U test": MannWhitneyUTest(),
+    "Chi-square": ChiSquareTest(),
+}
 
 if "show_distplots" not in st.session_state:
     st.session_state.show_distplots = False
@@ -79,76 +87,25 @@ def main():
         )
 
         if st.button("Calculate"):
-            if test_name == "Welch's t-test":
-                if (dataframe[columns_options[0]].dtype not in ["object", "bool"]) and (
-                    dataframe[columns_options[1]].dtype not in ["object", "bool"]
-                ):
-                    df = dataframe.dropna(subset=columns_options)
+            if test_name:
+                test = tests[test_name]
+                if test:
+                    res = test.execute(dataframe=dataframe, columns=columns_options)
 
-                    stat, pvalue = stats.ttest_ind(
-                        df[columns_options[0]], df[columns_options[1]], equal_var=False
-                    )
-                    st.write("Student's t-test result:")
-                    st.write(f"Statistic = {stat}")
-                    st.write(f"p-value = {pvalue}")
-                    if pvalue < 0.05:
-                        st.write(
-                            "The difference is statistically significant (p < 0.05)"
-                        )
-                    else:
-                        st.write(
-                            "The difference is not statistically significant (p >= 0.05)"
-                        )
-                else:
-                    st.write(
-                        "The t-test requires two numerical variables. Please select other variables or a test."
-                    )
-            elif test_name == "Mann–Whitney U test":
-                if (dataframe[columns_options[0]].dtype != "object") & (
-                    dataframe[columns_options[1]].dtype != "object"
-                ):
-                    df = dataframe.dropna(subset=columns_options)
-
-                    stat, pvalue = stats.mannwhitneyu(
-                        df[columns_options[0]], df[columns_options[1]]
-                    )
-
-                    st.write("Mann–Whitney U test result:")
-                    st.write(f"Statistic = {stat}")
-                    st.write(f"p-value = {pvalue}")
-                    if pvalue < 0.05:
-                        st.write(
-                            "The difference is statistically significant (p < 0.05)"
-                        )
-                    else:
-                        st.write(
-                            "The difference is not statistically significant (p >= 0.05)"
-                        )
-                else:
-                    st.write(
-                        "Mann–Whitney U test requires two numerical variables. Please select other variables or a test."
-                    )
-            elif test_name == "Chi-square":
-                cross_tab = pd.crosstab(
-                    dataframe[columns_options[0]],
-                    dataframe[columns_options[1]],
-                    margins=True,
-                )
-                st.write("Contingency table:")
-                st.write(cross_tab)
-
-                cross_tab = cross_tab.drop("All", axis=1).drop("All", axis=0)
-                stat, pvalue, _, _ = stats.chi2_contingency(cross_tab)
-
-                st.write("Chi-Square test result:")
-                st.write(f"Statistic = {stat}")
-                st.write("p-value: ", pvalue)
-                if pvalue < 0.05:
-                    st.write("The difference is statistically significant (p < 0.05)")
-                else:
-                    st.write(
-                        "The difference is not statistically significant (p >= 0.05)"
-                    )
+                    if res.result:
+                        st.write(f"{test_name} result:")
+                        st.write(f"Statistic = {res.result.statistic}")
+                        st.write(f"p-value = {res.result.pvalue}")
+                        if res.result.pvalue < 0.05:
+                            st.write(
+                                "The difference is statistically significant (p < 0.05)"
+                            )
+                        else:
+                            st.write(
+                                "The difference is not statistically significant (p >= 0.05)"
+                            )
+                    elif res.error:
+                        st.error(res.error)
 
 
 if __name__ == "__main__":
