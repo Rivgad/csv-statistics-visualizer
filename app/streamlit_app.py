@@ -30,7 +30,7 @@ def main():
 
         st.markdown("## Load dataset")
         if use_example_dataset:
-            uploaded_file = "app\\datasets\\students.csv"
+            uploaded_file = "app/datasets/students.csv"
         else:
             uploaded_file = st.file_uploader(
                 "Load dataset (*.csv)", ["csv"], accept_multiple_files=False
