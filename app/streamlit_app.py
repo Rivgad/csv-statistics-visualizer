@@ -28,10 +28,12 @@ def click_button_show_distplots():
 
 def main():
     st.markdown("# 📊 Data visualization and testing")
-    with st.echo(code_location="below"):
-        st.markdown("### Load dataset")
-        use_example_dataset = st.checkbox("Use example dataset")
+    st.sidebar.markdown("# Settings")
+    use_example_dataset = st.sidebar.checkbox("Use example dataset")
+    show_distlpots = st.sidebar.checkbox("Show distplots")
 
+    with st.echo(code_location="below"):
+        st.markdown("## Load dataset")
         if use_example_dataset:
             uploaded_file = ".\\datasets\\students.csv"
         else:
@@ -59,9 +61,8 @@ def main():
             st.warning("You have to select 2 columns")
             return
 
-        st.markdown("### Distpots view")
-        st.button("Show", on_click=click_button_show_distplots)
-        if st.session_state.show_distplots:
+        if show_distlpots:
+            st.markdown("### Distpots view")
             for column_option in columns_options:
                 if dataframe[column_option].dtype in ["object", "bool"]:
                     counts = dataframe[column_option].value_counts()
