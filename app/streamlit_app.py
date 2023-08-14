@@ -3,8 +3,8 @@ import streamlit as st
 from pandas.errors import ParserError
 import plotly.express as px
 from typing import Dict
-from app.helpers import is_categorical
-from app.tests import (
+from helpers import is_categorical
+from tests import (
     WelchsTTest,
     StatisticalTest,
     MannWhitneyUTest,
