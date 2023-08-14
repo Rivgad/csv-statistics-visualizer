@@ -57,7 +57,7 @@ def main():
             return
 
         if show_distlpots:
-            st.markdown("### Distpots view")
+            st.markdown("### Distpots")
             for column_option in columns_options:
                 draw_distplot(dataframe, column_option)
 
