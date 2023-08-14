@@ -1,6 +1,6 @@
-from app.helpers import is_categorical
-from app.tests.result import IsAplicableResult, Result
-from app.tests.statistical_test import StatisticalTest
+from helpers import is_categorical
+from tests.result import IsAplicableResult, Result
+from tests.statistical_test import StatisticalTest
 
 
 import pandas as pd

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 import pandas as pd
-from app.tests.result import Result, IsAplicableResult, TestExecutionError
+from tests.result import Result, IsAplicableResult, TestExecutionError
 
 
 class StatisticalTest(ABC):

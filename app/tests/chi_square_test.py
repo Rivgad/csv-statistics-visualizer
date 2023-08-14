@@ -1,5 +1,5 @@
-from app.tests.result import IsAplicableResult, Result
-from app.tests.statistical_test import StatisticalTest
+from tests.result import IsAplicableResult, Result
+from tests.statistical_test import StatisticalTest
 
 
 import pandas as pd
