@@ -12,7 +12,7 @@ from app.tests import (
 )
 
 
-tests: Dict[str, StatisticalTest | None] = {
+tests: Dict[str, StatisticalTest] = {
     "Welch's t-test": WelchsTTest(),
     "Mann–Whitney U test": MannWhitneyUTest(),
     "Chi-square": ChiSquareTest(),
