@@ -7,9 +7,12 @@ class Result(NamedTuple):
     pvalue: float | np.ndarray
 
 
-class TestResult(NamedTuple):
-    result: Optional[Result]
-    error: Optional[str]
+class TestExecutionError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
 
 
 IsAplicableResult: TypeAlias = Tuple[bool, Optional[str]]

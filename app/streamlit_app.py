@@ -2,9 +2,14 @@ import pandas as pd
 import streamlit as st
 from pandas.errors import ParserError
 import plotly.express as px
-from scipy import stats
 from typing import Dict
-from app.tests import WelchsTTest, StatisticalTest, MannWhitneyUTest, ChiSquareTest
+from app.tests import (
+    WelchsTTest,
+    StatisticalTest,
+    MannWhitneyUTest,
+    ChiSquareTest,
+    TestExecutionError,
+)
 
 
 tests: Dict[str, StatisticalTest | None] = {
@@ -90,13 +95,15 @@ def main():
             if test_name:
                 test = tests[test_name]
                 if test:
-                    res = test.execute(dataframe=dataframe, columns=columns_options)
+                    try:
+                        result = test.execute(
+                            dataframe=dataframe, columns=columns_options
+                        )
 
-                    if res.result:
                         st.write(f"{test_name} result:")
-                        st.write(f"Statistic = {res.result.statistic}")
-                        st.write(f"p-value = {res.result.pvalue}")
-                        if res.result.pvalue < 0.05:
+                        st.write(f"Statistic = {result.statistic}")
+                        st.write(f"p-value = {result.pvalue}")
+                        if result.pvalue < 0.05:
                             st.write(
                                 "The difference is statistically significant (p < 0.05)"
                             )
@@ -104,8 +111,8 @@ def main():
                             st.write(
                                 "The difference is not statistically significant (p >= 0.05)"
                             )
-                    elif res.error:
-                        st.error(res.error)
+                    except TestExecutionError as ex:
+                        st.error(ex.msg)
 
 
 if __name__ == "__main__":

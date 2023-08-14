@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 import pandas as pd
-from app.tests.result import TestResult, Result, IsAplicableResult
+from app.tests.result import Result, IsAplicableResult, TestExecutionError
 
 
 class StatisticalTest(ABC):
@@ -15,10 +15,10 @@ class StatisticalTest(ABC):
     def _compute(self, dataframe: pd.DataFrame, columns: List[str]) -> Result:
         pass
 
-    def execute(self, dataframe: pd.DataFrame, columns: List[str]) -> TestResult:
+    def execute(self, dataframe: pd.DataFrame, columns: List[str]) -> Result:
         (is_applicable, error) = self._is_applicable(dataframe, columns)
 
         if is_applicable:
-            return TestResult(self._compute(dataframe, columns), None)
+            return self._compute(dataframe, columns)
         else:
-            return TestResult(None, error)
+            raise TestExecutionError(error)
