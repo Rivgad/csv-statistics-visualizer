@@ -73,7 +73,7 @@ def main():
             options=[
                 "Welch's t-test",
                 "Mann–Whitney U test",
-                "chi-square",
+                "Chi-square",
             ],
             placeholder="Choose algorithm",
         )
@@ -128,7 +128,7 @@ def main():
                     st.write(
                         "Mann–Whitney U test requires two numerical variables. Please select other variables or a test."
                     )
-            elif test_name == "chi-square":
+            elif test_name == "Chi-square":
                 cross_tab = pd.crosstab(
                     dataframe[columns_options[0]],
                     dataframe[columns_options[1]],
