@@ -1,5 +1,5 @@
-from app.tests.result import IsAplicableResult
-from app.tests.result import Result
+from app.helpers import is_categorical
+from app.tests.result import IsAplicableResult, Result
 from app.tests.statistical_test import StatisticalTest
 
 
@@ -14,9 +14,7 @@ class WelchsTTest(StatisticalTest):
     def _is_applicable(
         self, dataframe: pd.DataFrame, columns: List[str]
     ) -> IsAplicableResult:
-        if (dataframe[columns[0]].dtype not in ["object", "bool"]) and (
-            dataframe[columns[1]].dtype not in ["object", "bool"]
-        ):
+        if not is_categorical(dataframe[columns[0]], dataframe[columns[1]]):
             return (True, None)
         else:
             return (
