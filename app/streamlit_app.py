@@ -18,13 +18,6 @@ tests: Dict[str, StatisticalTest] = {
     "Chi-square": ChiSquareTest(),
 }
 
-if "show_distplots" not in st.session_state:
-    st.session_state.show_distplots = False
-
-
-def click_button_show_distplots():
-    st.session_state.show_distplots = not st.session_state.show_distplots
-
 
 def main():
     with st.echo(code_location="below"):
